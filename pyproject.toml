@@ -1,0 +1,40 @@
+[project]
+name = "sorted-frozen-set"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.9.6",
+]
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "tests",
+    "conftest"
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "smoke: buisiness core logic",
+]
+
+addopts = [
+    "-ra -q",
+    "--cov=.",
+    "--cov-report",
+    "term-missing:skip-covered",
+    "--cov-fail-under=80"
+]
+
+[tool.coverage.run]
+omit = [
+    "*/tests/*.py"
+]
