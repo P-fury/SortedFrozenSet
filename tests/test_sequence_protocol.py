@@ -59,3 +59,18 @@ def test_slice_full(sorted_frozen_set_sequence):
 
 def test_reversed():
     s = SortedFrozenSet([1, 3, 5, 7])
+    r = reversed(s)
+    assert next(r) == 7
+    assert next(r) == 5
+    assert next(r) == 3
+    assert next(r) == 1
+
+    with pytest.raises(StopIteration):
+        next(r)
+
+def test_index_positive(sorted_frozen_set_sequence):
+    assert sorted_frozen_set_sequence.index(1) == 0
+
+def test_index_negative(sorted_frozen_set_sequence):
+    with pytest.raises(ValueError):
+        sorted_frozen_set_sequence.index(5)
