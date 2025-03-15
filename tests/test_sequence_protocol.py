@@ -68,9 +68,21 @@ def test_reversed():
     with pytest.raises(StopIteration):
         next(r)
 
+
 def test_index_positive(sorted_frozen_set_sequence):
     assert sorted_frozen_set_sequence.index(1) == 0
+
 
 def test_index_negative(sorted_frozen_set_sequence):
     with pytest.raises(ValueError):
         sorted_frozen_set_sequence.index(5)
+
+
+def test_count_zero(sorted_frozen_set_sequence):
+    assert sorted_frozen_set_sequence.count(5) == 0
+
+
+def test_count_one(sorted_frozen_set_sequence):
+    assert sorted_frozen_set_sequence.count(4) == 1
+
+
