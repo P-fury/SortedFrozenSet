@@ -1,3 +1,5 @@
+from collections.abc import Sequence
+
 import pytest
 from main.sorted_frozen_set import SortedFrozenSet
 
@@ -86,3 +88,71 @@ def test_count_one(sorted_frozen_set_sequence):
     assert sorted_frozen_set_sequence.count(4) == 1
 
 
+def test_add_disjoint():
+    s = SortedFrozenSet([1, 2, 3])
+    t = SortedFrozenSet([4, 5, 6])
+
+    assert s + t == SortedFrozenSet([1, 2, 3, 4, 5, 6])
+
+
+def test_add_equal():
+    s = SortedFrozenSet([1, 2, 3])
+    assert s + s == s
+
+
+def test_add_intersecting():
+    s = SortedFrozenSet([1, 2, 3])
+    t = SortedFrozenSet([2, 3, 4])
+
+    assert s + t == SortedFrozenSet([1, 2, 3, 4])
+
+
+def test_add_type_error_left():
+    s = SortedFrozenSet([1, 2, 3])
+    t = (3, 4, 5)
+    with pytest.raises(TypeError):
+        _ = s + t
+
+
+def test_add_type_error_right():
+    t = (3, 4, 5)
+    s = SortedFrozenSet([1, 2, 3])
+    with pytest.raises(TypeError):
+        _ = s + t
+
+
+def test_repetition_zero_left():
+    s = SortedFrozenSet([1, 2, 3])
+    assert s * 0 == SortedFrozenSet()
+
+
+def test_repetition_negative_left():
+    s = SortedFrozenSet([1, 2, 3])
+    assert s * -1 == SortedFrozenSet()
+
+
+def test_repetition_non_zero_left():
+    s = SortedFrozenSet([1, 2, 3])
+    assert s * 100 == s
+
+
+def test_repetition_zero_right():
+    s = SortedFrozenSet([1, 2, 3])
+    assert 0 * s == SortedFrozenSet()
+
+
+def test_repetition_negative_right():
+    s = SortedFrozenSet([1, 2, 3])
+    assert -1 * s == SortedFrozenSet()
+
+
+def test_repetition_non_zero_right():
+    s = SortedFrozenSet([1, 2, 3])
+    assert 100 * s == s
+
+def test_sequence_protocol():
+    assert issubclass(SortedFrozenSet, Sequence)
+
+# extended sequence
+# immutable/mutable -> __add__/__radd__, __mul__/__rmul__
+# only mutable -> __iadd__, __imul__, append, extend, insert, pop, reverse, remove, sort
