@@ -1,12 +1,12 @@
 from bisect import bisect_left
-from collections.abc import Iterable, Hashable, Iterator, Sequence
+from collections.abc import Iterable, Hashable, Iterator, Sequence, Set
 from itertools import chain
 from typing import Any
 
 from main.sorted_frozen_dtypes import SupportsRichComparisonT, SupportsRichComparison
 
 
-class SortedFrozenSet(Sequence):
+class SortedFrozenSet(Sequence, Set):
     def __init__(self, items: Iterable[SupportsRichComparisonT] | None = None) -> None:
         self._items: tuple[SupportsRichComparisonT, ...] = tuple(
             sorted(
@@ -60,11 +60,29 @@ class SortedFrozenSet(Sequence):
     def count(self, item):
         return int(item in self)
 
-    def index(self, item: Any) -> int:
+    def index(self, item: Any, start: int = 0, stop: int = ...) -> int:
         index = bisect_left(self._items, item)
         if (index != len(self._items)) and self._items[index] == item:
             return index
         raise ValueError(f'{item!r} not found')
+
+    def issubset(self, other: Iterable)-> bool:
+        return self <= SortedFrozenSet(other)
+
+    def issuperset(self, other: Iterable)-> bool:
+        return self >= SortedFrozenSet(other)
+
+    def intersection(self, other: Iterable):
+        return self & SortedFrozenSet(other)
+
+    def union(self, other: Iterable):
+        return self | SortedFrozenSet(other)
+
+    def symmetric_difference(self, other: Iterable):
+        return self ^ SortedFrozenSet(other)
+
+    def difference(self, other: Iterable):
+        return self - SortedFrozenSet(other)
 
     # def __next__(self) -> Hashable:
     #     return self._items.pop()
