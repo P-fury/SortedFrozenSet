@@ -1,4 +1,6 @@
+from bisect import bisect_left
 from collections.abc import Iterable, Hashable, Iterator, Sequence
+from itertools import chain
 from typing import Any
 
 from main.sorted_frozen_dtypes import SupportsRichComparisonT, SupportsRichComparison
@@ -12,8 +14,12 @@ class SortedFrozenSet(Sequence):
                 else set()
             ))
 
-    def __contains__(self, item: Hashable) -> bool:
-        return item in self._items
+    def __contains__(self, item) -> bool:
+        try:
+            self.index(item)
+            return True
+        except ValueError:
+            return False
 
     def __len__(self) -> int:
         return len(self._items)
@@ -40,9 +46,25 @@ class SortedFrozenSet(Sequence):
     def __hash__(self) -> int:
         return hash(tuple(self._items))
 
+    def __add__(self, other: Any) -> 'SortedFrozenSet':
+        if not isinstance(other, type(self)):
+            return NotImplemented
+        return SortedFrozenSet(chain(self._items, other._items))
 
+    def __mul__(self, other: Any) -> 'SortedFrozenSet':
+        return self if other > 0 else SortedFrozenSet()
 
+    def __rmul__(self, other: Any) -> 'SortedFrozenSet':
+        return self * other
 
+    def count(self, item):
+        return int(item in self)
+
+    def index(self, item: Any) -> int:
+        index = bisect_left(self._items, item)
+        if (index != len(self._items)) and self._items[index] == item:
+            return index
+        raise ValueError(f'{item!r} not found')
 
     # def __next__(self) -> Hashable:
     #     return self._items.pop()

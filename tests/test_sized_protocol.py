@@ -1,3 +1,5 @@
+from collections.abc import Sized
+
 from main.sorted_frozen_set import SortedFrozenSet
 
 
@@ -24,3 +26,6 @@ def test_ten():
 def test_with_duplicates():
     s = SortedFrozenSet([5, 5, 5])
     assert len(s) == 1
+
+def test_sized_protocol():
+    assert issubclass(SortedFrozenSet, Sized)
